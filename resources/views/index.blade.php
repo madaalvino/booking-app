@@ -61,7 +61,7 @@
                 <div class="flex gap-4 items-center">
                     <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Aula" class="w-24 h-20 object-cover rounded-lg shadow">
                     <div>
-                        <h3 class="font-semibold text-gray-800">Aula</h3>
+                        <h3 class="font-semibold text-gray-800">Aula Sodiq</h3>
                         <p class="text-gray-600 text-sm">Kapasitas: 100 orang</p>
                         <p class="text-gray-600 text-sm">Fasilitas: Panggung, Proyektor, Wifi</p>
                     </div>
