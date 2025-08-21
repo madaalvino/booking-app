@@ -10,15 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('rooms', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');       // nama ruangan
-        $table->text('description');  // deskripsi
-        $table->integer('capacity');  // kapasitas
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('rooms', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');       // nama ruangan
+            $table->text('description');  // deskripsi
+            $table->integer('capacity');  // kapasitas
+            $table->string('image')->nullable(); // kolom image, tanpa after()
+            $table->timestamps();
+        });
+    }
 
 
     /**

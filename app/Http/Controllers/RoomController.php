@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
@@ -20,15 +21,20 @@ class RoomController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'capacity' => 'required|integer',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'capacity' => 'required|integer|min:1',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        Room::create($request->all());
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('rooms', 'public');
+        }
 
-        return redirect()->route('rooms.index')->with('success', 'Ruangan berhasil ditambahkan');
+        Room::create($validated);
+
+        return redirect()->route('rooms.index')->with('success', 'Ruangan berhasil ditambahkan!');
     }
 
     public function edit(Room $room)
@@ -38,19 +44,33 @@ class RoomController extends Controller
 
     public function update(Request $request, Room $room)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'capacity' => 'required|integer',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'capacity' => 'required|integer|min:1',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $room->update($request->all());
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($room->image) {
+                Storage::disk('public')->delete($room->image);
+            }
+            $validated['image'] = $request->file('image')->store('rooms', 'public');
+        }
 
-        return redirect()->route('rooms.index')->with('success', 'Ruangan berhasil diperbarui');
+        $room->update($validated);
+
+        return redirect()->route('rooms.index')->with('success', 'Ruangan berhasil diupdate!');
     }
 
     public function destroy(Room $room)
     {
+        // Hapus gambar jika ada
+        if ($room->image) {
+            Storage::disk('public')->delete($room->image);
+        }
+
         $room->delete();
 
         return redirect()->route('rooms.index')->with('success', 'Ruangan berhasil dihapus');
