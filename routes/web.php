@@ -6,6 +6,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingsController;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::resource('bookings', BookingController::class);
