@@ -23,6 +23,7 @@
         <button @click="open = !open" @keydown.escape="open = false"
           class="flex items-center px-4 py-2 rounded-lg bg-sky-800 hover:bg-sky-900 transition-all duration-300 focus:outline-none shadow hover:scale-105">
           <span class="mr-2 text-lg">👤</span>
+          <span class="text-white font-medium">{{ Auth::check() ? Auth::user()->username : 'Guest' }}</span>
           <svg class="w-4 h-4 fill-current text-white transition-all duration-300" :class="{'rotate-180': open}" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
         </button>
         <div x-show="open" x-transition:enter="transition ease-out duration-300"
@@ -34,10 +35,20 @@
           @click.away="open = false"
           class="absolute right-0 mt-3 w-52 bg-white/90 backdrop-blur-md rounded-xl shadow-2xl ring-1 ring-cyan-200 z-30 origin-top-right"
           style="display: none;">
-          <a href="#" class="block px-5 py-3 text-gray-700 font-medium hover:bg-cyan-50 transition-all duration-200">Profile</a>
-          <a href="#" class="block px-5 py-3 text-gray-700 font-medium hover:bg-cyan-50 transition-all duration-200">Settings</a>
-          <div class="border-t my-1"></div>
-          <a href="#" class="block px-5 py-3 text-red-600 font-medium hover:bg-red-100 transition-all duration-200">Logout</a>
+          @if (Auth::check())
+            <a href="{{ route('profile') }}" class="block px-5 py-3 text-gray-700 font-medium hover:bg-cyan-50 transition-all duration-200">Profile</a>
+                      <a href="{{ route('settings') }}" class="block px-5 py-3 text-gray-700 font-medium hover:bg-cyan-50 transition-all duration-200" role="menuitem">Settings</a>
+            <a href="{{ route('logout') }}" class="block px-5 py-3 text-red-600 font-medium hover:bg-red-100 transition-all duration-200"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            Logout
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+          @else
+            <a href="{{ route('login') }}" class="block px-5 py-3 text-gray-700 font-medium hover:bg-cyan-50 transition-all duration-200">Login</a>
+            <a href="{{ route('register') }}" class="block px-5 py-3 text-gray-700 font-medium hover:bg-cyan-50 transition-all duration-200">Register</a>
+          @endif
         </div>
       </div>
     </div>

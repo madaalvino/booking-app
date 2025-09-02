@@ -75,5 +75,8 @@ class RoomController extends Controller
 
         return redirect()->route('rooms.index')->with('success', 'Ruangan berhasil dihapus');
     }
+    public function show(Room $room)
+{
+    return view('rooms.show', compact('room'));
 }
-
+}
