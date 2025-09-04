@@ -37,6 +37,7 @@
                                 {{ auth()->user()->username ?? 'Nama Pengguna' }}
                             </h2>
                             <p class="text-gray-600">{{ auth()->user()->email ?? 'email@example.com' }}</p>
+                            <p class="text-gray-600">{{ auth()->user()->role ?? 'Guest' }}</p>
                             <p class="text-gray-600">Tanggal Bergabung: {{ auth()->user()->created_at ? auth()->user()->created_at->format('d M Y') : 'Belum Diisi' }}</p>
                         </div>
                     </div>

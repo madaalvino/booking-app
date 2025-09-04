@@ -33,7 +33,10 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile')->middleware('auth');
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+Route::get('/user', [AuthController::class, 'showUser'])->name('user')->middleware('auth');
+Route::get('/auth/show', [AuthController::class, 'show'])->name('auth.show')->middleware('auth');
+Route::get('/auth/create', [AuthController::class, 'create'])->name('auth.create')->middleware('auth');
+Route::post('/auth/store', [AuthController::class, 'store'])->name('auth.store')->middleware('auth');
+Route::get('/auth/edit/{id}', [AuthController::class, 'edit'])->name('auth.edit')->middleware('auth');
+Route::put('/auth/update/{id}', [AuthController::class, 'update'])->name('auth.update')->middleware('auth');
+Route::delete('/auth/destroy/{id}', [AuthController::class, 'destroy'])->name('auth.destroy')->middleware('auth');

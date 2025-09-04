@@ -20,6 +20,11 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
+    public function create()
+    {
+        return view('auth.create'); // Pastikan view ini ada
+    }
+
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -29,7 +34,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            return redirect()->intended('home');
         }
 
         return back()->withErrors([
@@ -55,7 +60,59 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->route('dashboard');
+        return redirect()->route('home');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:admin,pengguna',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('auth.show')->with('success', 'Pengguna berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('auth.edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'role' => 'required|in:admin,pengguna',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+        $user->save();
+
+        return redirect()->route('auth.show')->with('success', 'Pengguna berhasil diperbarui.');
+    }
+    
+    public function destroy(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('auth.show')
+            ->with('success', 'Pengguna berhasil dihapus!');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -69,6 +126,11 @@ class AuthController extends Controller
     public function showProfile()
     {
         $user = Auth::user();
-        return view('auth.profile', compact('user'));
+        return view('profile', compact('user'));
     }
+    public function show()
+{
+    $users = User::all(); // Atau query sesuai kebutuhan
+    return view('auth.show', compact('users'));
+}
 }
