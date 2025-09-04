@@ -34,9 +34,10 @@
                         </div>
                         <div class="text-center md:text-left">
                             <h2 class="text-2xl font-bold bg-gradient-to-r from-blue-800 to-indigo-900 bg-clip-text text-transparent">
-                                {{ auth()->user()->name ?? 'Nama Pengguna' }}
+                                {{ auth()->user()->username ?? 'Nama Pengguna' }}
                             </h2>
                             <p class="text-gray-600">{{ auth()->user()->email ?? 'email@example.com' }}</p>
+                            <p class="text-gray-600">{{ auth()->user()->role ?? 'Guest' }}</p>
                             <p class="text-gray-600">Tanggal Bergabung: {{ auth()->user()->created_at ? auth()->user()->created_at->format('d M Y') : 'Belum Diisi' }}</p>
                         </div>
                     </div>
@@ -45,7 +46,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
                             <h3 class="text-lg font-semibold text-gray-800">Informasi Pribadi</h3>
-                            <p class="text-gray-600 mt-2">Nama: {{ auth()->user()->name ?? 'Belum Diisi' }}</p>
+                            <p class="text-gray-600 mt-2">Telepon: {{ auth()->user()->tlp ?? 'Belum Diisi' }}</p>
                             <p class="text-gray-600">Email: {{ auth()->user()->email ?? 'Belum Diisi' }}</p>
                         </div>
                     </div>

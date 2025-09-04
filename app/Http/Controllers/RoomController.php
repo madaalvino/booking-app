@@ -80,4 +80,3 @@ class RoomController extends Controller
     return view('rooms.show', compact('room'));
 }
 }
-

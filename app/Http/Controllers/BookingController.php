@@ -70,4 +70,9 @@ class BookingController extends Controller
         return redirect()->route('bookings.index')
             ->with('success', 'Booking berhasil dihapus!');
     }
+
+    public function show(Booking $booking)
+    {
+        return view('bookings.show', compact('booking'));
+    }
 }
