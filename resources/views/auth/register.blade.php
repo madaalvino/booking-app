@@ -26,7 +26,7 @@
             <div class="relative z-10">
                 <div class="text-center mb-8">
                     <h2 class="text-4xl font-black bg-gradient-to-r from-indigo-900 via-sky-700 to-cyan-500 bg-clip-text text-transparent mb-2 animate-title-glow">
-                        Register
+                        Register Now
                     </h2>
                     <p class="text-gray-600 font-medium">Buat akun baru</p>
                 </div>

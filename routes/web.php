@@ -7,7 +7,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
-
+use App\Http\Controllers\AboutController;
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::resource('bookings', BookingController::class);
 Route::resource('rooms', RoomController::class);
@@ -25,6 +25,7 @@ Route::get('/index', function () {
 });
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::get('/about', [aboutController::class, 'index'])->name('about');
 
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');

@@ -11,11 +11,19 @@
     <div class="container mx-auto px-4 py-12 relative z-10">
         <!-- Header Section -->
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-12 gap-6">
+        @if (Auth::check() && Auth::user()->role === 'admin')
             <div class="space-y-2">
                 <h1 class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
                     Daftar Booking
                 </h1>
                 <p class="text-gray-600 text-lg">Kelola dan pantau semua booking dengan mudah</p>
+                @else
+                <div class="space-y-2">
+                <h1 class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
+                    Daftar Booking Anda
+                </h1>
+                <p class="text-gray-600 text-lg">Kelola dan pantau semua booking Anda dengan mudah</p>
+            @endif
             </div>
             @if (Auth::check() && Auth::user()->role === 'admin')
                 <a href="{{ route('bookings.create') }}"
@@ -111,128 +119,130 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($bookings as $booking)
-                            <tr class="group hover:bg-gradient-to-r hover:from-cyan-50/50 hover:via-blue-50/50 hover:to-indigo-50/50 transition-all duration-500 transform hover:scale-[1.01] hover:shadow-lg relative overflow-hidden">
-                                <!-- Row Hover Effect -->
-                                <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500 to-blue-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                                @if (Auth::user()->role === 'admin' || (Auth::user()->role === 'pengguna' && $booking->user_id === Auth::id()))
+                                <tr class="group hover:bg-gradient-to-r hover:from-cyan-50/50 hover:via-blue-50/50 hover:to-indigo-50/50 transition-all duration-500 transform hover:scale-[1.01] hover:shadow-lg relative overflow-hidden">
+                                    <!-- Row Hover Effect -->
+                                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500 to-blue-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
 
-                                <td class="px-8 py-6 relative z-10">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                            </svg>
-                                        </div>
-                                        <span class="font-bold text-xl bg-gradient-to-r from-blue-800 to-indigo-900 bg-clip-text text-transparent group-hover:from-cyan-600 group-hover:to-blue-600 transition-all duration-300">
-                                            {{ $booking->name }}
-                                        </span>
-                                    </div>
-                                </td>
-
-                                <td class="px-8 py-6 relative z-10">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
-                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                            </svg>
-                                        </div>
-                                        <span class="text-gray-700 font-medium text-base group-hover:text-gray-900 transition-colors duration-300">
-                                            {{ $booking->email }}
-                                        </span>
-                                    </div>
-                                </td>
-
-                                <td class="px-8 py-6 relative z-10">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
-                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10h8V11M8 11h8"/>
-                                            </svg>
-                                        </div>
-                                        <span class="text-gray-700 font-semibold text-base group-hover:text-gray-900 transition-colors duration-300">
-                                            {{ \Carbon\Carbon::parse($booking->booking_date)->format('d-m-Y H:i') }}
-                                        </span>
-                                    </div>
-                                </td>
-
-                                <td class="px-8 py-6 relative z-10">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
-                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                                            </svg>
-                                        </div>
-                                        <span class="font-bold text-xl bg-gradient-to-r from-orange-800 to-red-900 bg-clip-text text-transparent group-hover:from-orange-600 group-hover:to-red-600 transition-all duration-300">
-                                            {{ $booking->room->name ?? '-' }}
-                                        </span>
-                                    </div>
-                                </td>
-
-                                <td class="px-8 py-6 relative z-10">
-                                    @if($booking->status == 'pending')
-                                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 group-hover:from-yellow-200 group-hover:to-amber-200 text-yellow-800 group-hover:text-yellow-900 font-bold rounded-full border-2 border-yellow-200 group-hover:border-amber-300 transition-all duration-300 shadow-sm group-hover:shadow-md animate-pulse">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                            </svg>
-                                            Pending
-                                        </div>
-                                    @elseif($booking->status == 'confirmed')
-                                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 group-hover:from-green-200 group-hover:to-emerald-200 text-green-800 group-hover:text-green-900 font-bold rounded-full border-2 border-green-200 group-hover:border-emerald-300 transition-all duration-300 shadow-sm group-hover:shadow-md">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                            </svg>
-                                            Confirmed
-                                        </div>
-                                    @else
-                                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-100 to-pink-100 group-hover:from-red-200 group-hover:to-pink-200 text-red-800 group-hover:text-red-900 font-bold rounded-full border-2 border-red-200 group-hover:border-pink-300 transition-all duration-300 shadow-sm group-hover:shadow-md">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                            </svg>
-                                            {{ ucfirst($booking->status) }}
-                                        </div>
-                                    @endif
-                                </td>
-
-                                <td class="px-8 py-6 relative z-10">
-                                    <div class="flex gap-3">
-                                        @if (Auth::check() && Auth::user()->role === 'admin')
-                                            <a href="{{ route('bookings.edit', $booking->id) }}"
-                                            class="group/btn relative inline-flex items-center px-5 py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
-                                                <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                                                <svg class="relative z-10 w-4 h-4 mr-2 transform group-hover/btn:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    <td class="px-8 py-6 relative z-10">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                                 </svg>
-                                                <span class="relative z-10">Edit</span>
-                                            </a>
+                                            </div>
+                                            <span class="font-bold text-xl bg-gradient-to-r from-blue-800 to-indigo-900 bg-clip-text text-transparent group-hover:from-cyan-600 group-hover:to-blue-600 transition-all duration-300">
+                                                {{ $booking->name }}
+                                            </span>
+                                        </div>
+                                    </td>
 
-                                            <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus booking ini?')" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="group/btn relative inline-flex items-center px-5 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
-                                                    <div class="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                                                    <svg class="relative z-10 w-4 h-4 mr-2 transform group-hover/btn:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                    <span class="relative z-10">Hapus</span>
-                                                </button>
-                                            </form>
+                                    <td class="px-8 py-6 relative z-10">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                                </svg>
+                                            </div>
+                                            <span class="text-gray-700 font-medium text-base group-hover:text-gray-900 transition-colors duration-300">
+                                                {{ $booking->email }}
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td class="px-8 py-6 relative z-10">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10h8V11M8 11h8"/>
+                                                </svg>
+                                            </div>
+                                            <span class="text-gray-700 font-semibold text-base group-hover:text-gray-900 transition-colors duration-300">
+                                                {{ \Carbon\Carbon::parse($booking->booking_date)->format('d-m-Y H:i') }}
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td class="px-8 py-6 relative z-10">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                                </svg>
+                                            </div>
+                                            <span class="font-bold text-xl bg-gradient-to-r from-orange-800 to-red-900 bg-clip-text text-transparent group-hover:from-orange-600 group-hover:to-red-600 transition-all duration-300">
+                                                {{ $booking->room->name ?? '-' }}
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td class="px-8 py-6 relative z-10">
+                                        @if($booking->status == 'pending')
+                                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 group-hover:from-yellow-200 group-hover:to-amber-200 text-yellow-800 group-hover:text-yellow-900 font-bold rounded-full border-2 border-yellow-200 group-hover:border-amber-300 transition-all duration-300 shadow-sm group-hover:shadow-md animate-pulse">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Pending
+                                            </div>
+                                        @elseif($booking->status == 'confirmed')
+                                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 group-hover:from-green-200 group-hover:to-emerald-200 text-green-800 group-hover:text-green-900 font-bold rounded-full border-2 border-green-200 group-hover:border-emerald-300 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                Confirmed
+                                            </div>
                                         @else
-                                            <a href="{{ route('bookings.show', $booking->id) }}"
-                                            class="group/btn relative inline-flex items-center px-5 py-3 bg-gradient-to-r from-blue-400 to-indigo-500 text-white font-bold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
-                                                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                                                <span class="relative z-10 flex items-center gap-2">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                                    </svg>
-                                                    Detail Ruangan
-                                                </span>
-                                            </a>
+                                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-100 to-pink-100 group-hover:from-red-200 group-hover:to-pink-200 text-red-800 group-hover:text-red-900 font-bold rounded-full border-2 border-red-200 group-hover:border-pink-300 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                {{ ucfirst($booking->status) }}
+                                            </div>
                                         @endif
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+
+                                    <td class="px-8 py-6 relative z-10">
+                                        <div class="flex gap-3">
+                                            @if (Auth::check() && Auth::user()->role === 'admin')
+                                                <a href="{{ route('bookings.edit', $booking->id) }}"
+                                                class="group/btn relative inline-flex items-center px-5 py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
+                                                    <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                                                    <svg class="relative z-10 w-4 h-4 mr-2 transform group-hover/btn:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                    </svg>
+                                                    <span class="relative z-10">Edit</span>
+                                                </a>
+
+                                                <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus booking ini?')" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="group/btn relative inline-flex items-center px-5 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
+                                                        <div class="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                                                        <svg class="relative z-10 w-4 h-4 mr-2 transform group-hover/btn:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                        <span class="relative z-10">Hapus</span>
+                                                    </button>
+                                                </form>
+                                            @elseif (Auth::user()->role === 'pengguna')
+                                                <a href="{{ route('bookings.show', $booking->id) }}"
+                                                class="group/btn relative inline-flex items-center px-5 py-3 bg-gradient-to-r from-blue-400 to-indigo-500 text-white font-bold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
+                                                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                                                    <span class="relative z-10 flex items-center gap-2">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                        </svg>
+                                                        Detail Ruangan
+                                                    </span>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endif
                             @empty
                             <tr>
                                 <td colspan="6" class="text-center py-16 relative">

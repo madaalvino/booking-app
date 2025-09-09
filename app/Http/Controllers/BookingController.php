@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
     // tampil semua booking
     public function index()
     {
-        $bookings = Booking::all();
+        if (Auth::user()->role === 'admin') {
+            $bookings = Booking::with('room')->get();
+        } else {
+            // Bug fix: gunakan user_id bukan id untuk filtering
+            $bookings = Booking::with('room')->where('user_id', Auth::id())->get();
+        }
         return view('bookings.index', compact('bookings'));
     }
 
@@ -25,17 +31,25 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
             'email' => 'required|email',
             'booking_date' => 'required|date',
-            'room_id' => 'required|exists:rooms,id', // validasi room
-            'status' => 'required|in:pending,confirmed,canceled', // validasi status
+            'room_id' => 'required|exists:rooms,id',
+            'status' => 'required|in:pending,confirmed,canceled',
         ]);
 
-        Booking::create($request->all());
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'booking_date' => $request->booking_date,
+            'room_id' => $request->room_id,
+            'status' => $request->status,
+            'user_id' => auth()->id(),
+        ];
 
-        return redirect()->route('bookings.index')
-            ->with('success', 'Booking berhasil dibuat!');
+        $booking = Booking::create($data);
+
+        return redirect()->route('bookings.index')->with('success', 'Booking berhasil ditambahkan.');
     }
 
     // form edit booking
@@ -60,6 +74,49 @@ class BookingController extends Controller
 
         return redirect()->route('bookings.index')
             ->with('success', 'Booking berhasil diperbarui!');
+    }
+
+    /**
+     * Update booking status (PATCH method for status only)
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        // Validate admin role
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect()->route('bookings.index')
+                ->with('error', 'Anda tidak memiliki akses untuk mengubah status booking.');
+        }
+
+        // Validate the request
+        $request->validate([
+            'status' => 'required|in:pending,confirmed,canceled'
+        ]);
+
+        try {
+            // Find the booking
+            $booking = Booking::findOrFail($id);
+
+            // Store old status for success message
+            $oldStatus = $booking->status;
+
+            // Update the status
+            $booking->status = $request->status;
+            $booking->save();
+
+            // Create success message based on status change
+            $statusMessages = [
+                'pending' => 'Booking telah diubah menjadi Pending',
+                'confirmed' => 'Booking telah dikonfirmasi',
+                'canceled' => 'Booking telah dibatalkan'
+            ];
+
+            return redirect()->route('bookings.index')
+                ->with('success', $statusMessages[$request->status]);
+
+        } catch (\Exception $e) {
+            return redirect()->route('bookings.index')
+                ->with('error', 'Terjadi kesalahan saat mengupdate status booking: ' . $e->getMessage());
+        }
     }
 
     // hapus booking

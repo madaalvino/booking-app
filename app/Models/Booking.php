@@ -11,12 +11,18 @@ class Booking extends Model
         'email',
         'booking_date',
         'status',
-        'room_id', // jangan lupa tambahkan kalau ada kolom room_id di tabel
+        'room_id',
+        'user_id', // jangan lupa tambahkan kalau ada kolom room_id di tabel
     ];
 
     // Relasi ke tabel Room
     public function room()
     {
         return $this->belongsTo(Room::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

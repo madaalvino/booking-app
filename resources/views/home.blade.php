@@ -80,23 +80,39 @@
                 </svg>
               </div>
             </div>
-
+            @if (Auth::check() && Auth::user()->role === 'admin')
             <div class="space-y-3">
               <h1 class="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-900 bg-clip-text text-transparent">
-                Room Manager
+                Admin Room Manager
               </h1>
               <p class="text-gray-600 text-xl font-medium">
                 Dashboard Manajemen Ruangan Premium
               </p>
               <div class="flex items-center gap-2 text-sm text-gray-500">
                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>System Online</span>
+                <span>Admin</span>
                 <div class="w-px h-4 bg-gray-300 mx-2"></div>
                 <span>{{ now()->format('d M Y, H:i') }}</span>
               </div>
             </div>
           </div>
-
+@else
+          <div class="space-y-3">
+              <h1 class="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-900 bg-clip-text text-transparent">
+                Selamat Datang di Booking-APP
+              </h1>
+              <p class="text-gray-600 text-xl font-medium">
+                Silahkan Pilih dan Booking ruangan sesuai kebutuhan Anda
+              </p>
+              <div class="flex items-center gap-2 text-sm text-gray-500">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>Pengguna</span>
+                <div class="w-px h-4 bg-gray-300 mx-2"></div>
+                <span>{{ now()->format('d M Y, H:i') }}</span>
+              </div>
+            </div>
+          </div>
+@endif
           <div class="flex gap-4">
               @if (Auth::check() && Auth::user()->role === 'admin')
                 <a href="{{ route('rooms.create') }}"
